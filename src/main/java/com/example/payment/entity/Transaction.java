@@ -1,4 +1,4 @@
-package com.example.payment.entity;
+package com.talentica.paymentservice.entity;
 
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;

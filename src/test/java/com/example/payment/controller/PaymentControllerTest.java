@@ -1,8 +1,8 @@
-package com.example.payment.controller;
+package com.talentica.paymentservice.controller;
 
-import com.example.payment.dto.PaymentDtos;
-import com.example.payment.security.JwtAuthenticationFilter;
-import com.example.payment.service.PaymentService;
+import com.talentica.paymentservice.dto.PaymentDtos;
+import com.talentica.paymentservice.security.JwtAuthenticationFilter;
+import com.talentica.paymentservice.service.PaymentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

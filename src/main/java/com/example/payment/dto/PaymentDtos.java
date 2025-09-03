@@ -1,4 +1,4 @@
-package com.example.payment.dto;
+package com.talentica.paymentservice.dto;
 
 public class PaymentDtos {
     public record PurchaseRequest(String externalOrderId, String customerEmail, long amountCents, String currency, String description,

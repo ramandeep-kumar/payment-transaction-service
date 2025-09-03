@@ -1,7 +1,7 @@
-package com.example.payment.controller;
+package com.talentica.paymentservice.controller;
 
-import com.example.payment.dto.PaymentDtos.*;
-import com.example.payment.service.PaymentService;
+import com.talentica.paymentservice.dto.PaymentDtos.*;
+import com.talentica.paymentservice.service.PaymentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

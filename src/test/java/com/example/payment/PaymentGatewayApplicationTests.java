@@ -1,4 +1,4 @@
-package com.example.payment;
+package com.talentica.paymentservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

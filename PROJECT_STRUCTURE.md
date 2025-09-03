@@ -1,7 +1,7 @@
 # Project Structure
 
 ```
-src/main/java/com/example/payment/
+src/main/java/com/talentica/paymentservice/
 ├── config/        # App configuration (security filter chain)
 ├── controller/    # REST API controllers
 ├── dto/           # Request/Response DTOs

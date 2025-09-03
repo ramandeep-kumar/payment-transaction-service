@@ -1,6 +1,6 @@
-package com.example.payment.repository;
+package com.talentica.paymentservice.repository;
 
-import com.example.payment.entity.Order;
+import com.talentica.paymentservice.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

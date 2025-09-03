@@ -1,11 +1,11 @@
-package com.example.payment.service;
+package com.talentica.paymentservice.service;
 
-import com.example.payment.dto.PaymentDtos;
-import com.example.payment.entity.Order;
-import com.example.payment.entity.Transaction;
-import com.example.payment.gateway.AuthorizeNetClient;
-import com.example.payment.repository.OrderRepository;
-import com.example.payment.repository.TransactionRepository;
+import com.talentica.paymentservice.dto.PaymentDtos;
+import com.talentica.paymentservice.entity.Order;
+import com.talentica.paymentservice.entity.Transaction;
+import com.talentica.paymentservice.gateway.AuthorizeNetClient;
+import com.talentica.paymentservice.repository.OrderRepository;
+import com.talentica.paymentservice.repository.TransactionRepository;
 import net.authorize.api.contract.v1.CreateTransactionResponse;
 import net.authorize.api.contract.v1.MessagesType;
 import net.authorize.api.contract.v1.MessageTypeEnum;

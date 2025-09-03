@@ -1,6 +1,6 @@
-package com.example.payment.config;
+package com.talentica.paymentservice.config;
 
-import com.example.payment.security.JwtAuthenticationFilter;
+import com.talentica.paymentservice.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;

@@ -1,4 +1,4 @@
-package com.example.payment.security;
+package com.talentica.paymentservice.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

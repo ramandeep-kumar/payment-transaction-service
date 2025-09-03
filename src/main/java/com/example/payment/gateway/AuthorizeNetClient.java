@@ -1,4 +1,4 @@
-package com.example.payment.gateway;
+package com.talentica.paymentservice.gateway;
 
 import net.authorize.Environment;
 import net.authorize.Merchant;

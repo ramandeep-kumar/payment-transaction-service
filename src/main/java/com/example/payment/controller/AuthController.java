@@ -1,4 +1,4 @@
-package com.example.payment.controller;
+package com.talentica.paymentservice.controller;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

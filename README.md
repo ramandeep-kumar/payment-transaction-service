@@ -3,21 +3,27 @@
 A robust backend application with Authorize.Net Sandbox payment integration.
 
 ## Features
-- JWT Authentication
-- Authorize.Net Sandbox API integration
-- Core payment flows: purchase, refund, cancel, authorize/capture
-- PostgreSQL database for orders & transaction history
+- JWT Authentication (Bearer)
+- Authorize.Net Sandbox API integration (official Java SDK)
+- Core payment flows: purchase, authorize/capture, void (cancel), refund (full/partial)
+- PostgreSQL + Flyway for orders & transaction history
 - Clear error responses
-- Swagger API documentation
 
 ## Setup
 
 ### Prerequisites
-- Java 11+
+- Java 17+
 - Docker
 
 ### Environment Variables
-Configure `.env` (see `.env.example`).
+Set the following (via shell, `.env`, or docker-compose):
+
+- `API_LOGIN_ID` (Authorize.Net sandbox)
+- `TRANSACTION_KEY` (Authorize.Net sandbox)
+- `JWT_SECRET` (HS256 secret; 32+ chars recommended)
+- `DB_URL` (e.g. jdbc:postgresql://localhost:5432/paymentservice)
+- `DB_USERNAME` (e.g. postgres)
+- `DB_PASSWORD` (e.g. postgres)
 
 ### Run with Docker Compose
 
@@ -25,9 +31,41 @@ Configure `.env` (see `.env.example`).
 docker-compose up --build
 ```
 
-### API Documentation
+### Run locally (without Docker)
 
-Swagger UI: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+```bash
+./mvnw spring-boot:run
+```
+
+### JWT Authentication
+
+1) Generate a token (for testing):
+
+```bash
+curl -X POST "http://localhost:8080/auth/token?sub=dev-user"
+```
+
+2) Call secured endpoints with Authorization header:
+
+```bash
+curl -H "Authorization: Bearer <JWT>" \
+     -H "Content-Type: application/json" \
+     -d '{
+           "externalOrderId":"ext-1",
+           "customerEmail":"a@b.com",
+           "amountCents":1000,
+           "currency":"USD",
+           "description":"Test purchase",
+           "cardNumber":"4111111111111111",
+           "cardExpiry":"2030-12",
+           "cardCvv":"123"
+         }' \
+     http://localhost:8080/payments/purchase
+```
+
+### API Specification
+
+See `API-SPECIFICATION.yaml` (OpenAPI 3).
 
 ## Testing
 
@@ -35,10 +73,12 @@ Swagger UI: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagge
 ./mvnw test
 ```
 
+Coverage HTML report: `target/site/jacoco/index.html`
+
 ## Database
 
-PostgreSQL is used for persistence. Use `docker-compose.yml` for local setup.
+PostgreSQL is used for persistence. Use `docker-compose.yml` for local setup. Migrations via Flyway under `src/main/resources/db/migration`.
 
 ## Authorize.Net Sandbox
 
-Sign up for sandbox credentials [here](https://developer.authorize.net/hello_world/sandbox.html).
+Sign up for sandbox credentials (login ID and transaction key) at `https://developer.authorize.net/hello_world/sandbox.html`.

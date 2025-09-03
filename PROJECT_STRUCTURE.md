@@ -1,22 +1,20 @@
 # Project Structure
 
 ```
-src/main/java/com/talentica/paymentservice/
-├── config/        # App configuration (security, Swagger/OpenAPI, JWT)
-├── constant/      # Constant values
+src/main/java/com/example/payment/
+├── config/        # App configuration (security filter chain)
 ├── controller/    # REST API controllers
+├── dto/           # Request/Response DTOs
 ├── entity/        # JPA entities (Order, Transaction)
-├── enum/          # Enum classes (PaymentStatus, TransactionType)
-├── exception/     # Custom exceptions
-├── mapper/        # Mapper classes (DTO <-> Entity)
-├── model/         # Request/Response models (DTOs)
-├── repository/    # JPA repositories
-├── service/       # Service interfaces
-├── service/impl/  # Service implementations
-├── util/          # Utilities (JWT, etc.)
-PaymentServiceApplication.java # Main class
+├── gateway/       # Authorize.Net client wrapper
+├── repository/    # Spring Data JPA repositories
+├── security/      # JWT authentication filter
+├── service/       # Business services
+PaymentGatewayApplication.java # Main class
+
+src/main/resources/
+├── application.properties
+└── db/migration/  # Flyway migrations (V1__init.sql)
 ```
 
-- `resources/application.properties`: Configuration
-- `.env.example`: Environment variable sample
-- `docker-compose.yml`: Multi-container setup
+- `docker-compose.yml`: Multi-container setup (PostgreSQL + app)

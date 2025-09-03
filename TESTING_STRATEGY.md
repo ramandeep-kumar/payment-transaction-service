@@ -2,19 +2,22 @@
 
 ## Frameworks
 
-- JUnit for unit tests
+- JUnit 5 for unit tests
 - Mockito for mocking dependencies
+- Spring MockMvc for controller slice tests
+- H2 in-memory DB for tests (application-test)
+- JaCoCo for coverage
 
 ## Coverage Goals
 
-- All service layer logic
-- Controller endpoints
-- Exception handling
-- Repository methods
+- ≥60% overall line coverage
+- Service layer flows (purchase, authorize, capture, void, refund)
+- Controller endpoints (200 responses)
+- Negative-path tests where feasible
 
 ## Approach
 
-- Unit tests for each service method
-- Mock integrations with Authorize.Net
-- Validate error responses for invalid requests
-- Measure coverage using JaCoCo
+- Unit tests for each service method with Authorize.Net mocked
+- Controller slice tests with filters disabled
+- H2 configuration for context loads; Flyway disabled in tests
+- Measure coverage with JaCoCo; exclude gateway/security/config

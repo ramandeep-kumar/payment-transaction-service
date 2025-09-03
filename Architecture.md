@@ -9,16 +9,18 @@
 
 ## API Endpoints
 
-- POST `/api/v1/payments/purchase`
-- POST `/api/v1/payments/authorize`
-- POST `/api/v1/payments/capture/{transactionId}`
-- POST `/api/v1/payments/cancel/{transactionId}`
-- POST `/api/v1/payments/refund/{transactionId}?amount={amount}`
-- GET `/api/v1/payments/history/{orderId}` (Transaction history for an order)
+- POST `/auth/token` (public; returns JWT)
+- POST `/payments/purchase`
+- POST `/payments/authorize`
+- POST `/payments/capture`
+- POST `/payments/void`
+- POST `/payments/refund`
+
+All `/payments/*` endpoints require `Authorization: Bearer <token>`.
 
 ## DB Schema & Relationships
 
-- `Order`: (id, amount, currency, status, createdAt)
-- `Transaction`: (id, transactionId, amount, type, status, transactionDate, order_id)
+- `orders` (UUID id, external_order_id, customer_email, amount_cents BIGINT, currency, status, description, created_at, updated_at)
+- `transactions` (UUID id, order_id FK -> orders(id), gateway_transaction_id, type, amount_cents BIGINT, status, raw_request JSONB, raw_response JSONB, created_at)
 
 - **Order** 1 --- N **Transaction**

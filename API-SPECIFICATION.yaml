@@ -2,160 +2,200 @@ openapi: 3.0.0
 info:
   title: Payment Transaction Service API
   version: "1.0"
-  description: API documentation for Payment Transaction Service
+  description: OpenAPI for Spring Boot Authorize.Net integration
 paths:
-  /api/v1/payments/purchase:
+  /auth/token:
     post:
+      summary: Issue JWT token (testing)
+      parameters:
+        - in: query
+          name: sub
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: JWT token
+          content:
+            text/plain:
+              schema:
+                type: string
+  /payments/purchase:
+    post:
+      security:
+        - bearerAuth: []
       summary: Purchase (auth + capture)
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PaymentRequest'
+              $ref: '#/components/schemas/PurchaseRequest'
       responses:
         '200':
           description: Purchase response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaymentResponse'
-  /api/v1/payments/authorize:
+                $ref: '#/components/schemas/PurchaseResponse'
+  /payments/authorize:
     post:
+      security:
+        - bearerAuth: []
       summary: Authorize payment
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PaymentRequest'
+              $ref: '#/components/schemas/AuthorizeRequest'
       responses:
         '200':
           description: Authorize response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaymentResponse'
-  /api/v1/payments/capture/{transactionId}:
+                $ref: '#/components/schemas/PurchaseResponse'
+  /payments/capture:
     post:
+      security:
+        - bearerAuth: []
       summary: Capture authorized payment
-      parameters:
-        - name: transactionId
-          in: path
-          required: true
-          schema:
-            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaptureRequest'
       responses:
         '200':
           description: Capture response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaymentResponse'
-  /api/v1/payments/cancel/{transactionId}:
+                $ref: '#/components/schemas/PurchaseResponse'
+  /payments/void:
     post:
-      summary: Cancel payment before capture
-      parameters:
-        - name: transactionId
-          in: path
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
+      summary: Void last transaction for order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoidRequest'
       responses:
         '200':
-          description: Cancel response
+          description: Void response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaymentResponse'
-  /api/v1/payments/refund/{transactionId}:
+                $ref: '#/components/schemas/PurchaseResponse'
+  /payments/refund:
     post:
-      summary: Refund payment
-      parameters:
-        - name: transactionId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: amount
-          in: query
-          required: true
-          schema:
-            type: number
+      security:
+        - bearerAuth: []
+      summary: Refund a captured/purchased transaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefundRequest'
       responses:
         '200':
           description: Refund response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaymentResponse'
-  /api/v1/payments/history/{orderId}:
-    get:
-      summary: Get transaction history for an order
-      parameters:
-        - name: orderId
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Transaction history list
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Transaction'
+                $ref: '#/components/schemas/PurchaseResponse'
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
-    PaymentRequest:
+    PurchaseRequest:
       type: object
+      required: [externalOrderId, amountCents, currency, cardNumber, cardExpiry, cardCvv]
       properties:
-        amount:
-          type: number
+        externalOrderId:
+          type: string
+        customerEmail:
+          type: string
+          format: email
+        amountCents:
+          type: integer
+          format: int64
         currency:
           type: string
-        paymentMethodNonce:
+          example: USD
+        description:
           type: string
-    PaymentResponse:
+        cardNumber:
+          type: string
+          example: 4111111111111111
+        cardExpiry:
+          type: string
+          example: 2030-12
+        cardCvv:
+          type: string
+          example: "123"
+    AuthorizeRequest:
+      type: object
+      required: [externalOrderId, amountCents, currency, cardNumber, cardExpiry, cardCvv]
+      properties:
+        externalOrderId:
+          type: string
+        amountCents:
+          type: integer
+          format: int64
+        currency:
+          type: string
+        cardNumber:
+          type: string
+        cardExpiry:
+          type: string
+        cardCvv:
+          type: string
+    CaptureRequest:
+      type: object
+      required: [orderId, amountCents]
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        amountCents:
+          type: integer
+          format: int64
+    VoidRequest:
+      type: object
+      required: [orderId]
+      properties:
+        orderId:
+          type: string
+          format: uuid
+    RefundRequest:
+      type: object
+      required: [orderId, amountCents, last4]
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        amountCents:
+          type: integer
+          format: int64
+        last4:
+          type: string
+          description: Last 4 digits of card
+    PurchaseResponse:
       type: object
       properties:
-        status:
+        orderId:
           type: string
         transactionId:
           type: string
-        message:
-          type: string
-    Transaction:
-      type: object
-      properties:
-        id:
-          type: integer
-        transactionId:
-          type: string
-        amount:
-          type: number
-        type:
-          type: string
         status:
           type: string
-        transactionDate:
-          type: string
-          format: date-time
-        order:
-          $ref: '#/components/schemas/Order'
-    Order:
-      type: object
-      properties:
-        id:
-          type: integer
-        amount:
-          type: number
-        currency:
-          type: string
-        status:
-          type: string
-        createdAt:
-          type: string
-          format: date-time

@@ -13,10 +13,10 @@ import java.math.BigDecimal;
 @Component
 public class AuthorizeNetClient {
 
-    @Value("${API_LOGIN_ID}")
+    @Value("${API_LOGIN_ID:dummy}")
     private String apiLoginId;
 
-    @Value("${TRANSACTION_KEY}")
+    @Value("${TRANSACTION_KEY:dummy}")
     private String transactionKey;
 
     private void initAuth() {

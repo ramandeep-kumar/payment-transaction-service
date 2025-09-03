@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: paymentservice
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  paymentservice:
+    build: .
+    image: paymentservice:latest
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/paymentservice
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      API_LOGIN_ID: your_authorize_net_login_id
+      TRANSACTION_KEY: your_authorize_net_transaction_key
+      JWT_SECRET: your_jwt_secret
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:

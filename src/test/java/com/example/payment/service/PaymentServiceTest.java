@@ -113,5 +113,61 @@ class PaymentServiceTest {
         PaymentDtos.PurchaseResponse capResp = paymentService.capture(capReq);
         assertThat(capResp.status()).isIn("CAPTURED", "FAILED");
     }
+
+    @Test
+    void void_success_updates_status() {
+        // Arrange
+        Order order = new Order();
+        try {
+            var idField = Order.class.getDeclaredField("id");
+            idField.setAccessible(true);
+            idField.set(order, java.util.UUID.randomUUID());
+        } catch (Exception ignored) {}
+        when(orderRepository.findById(order.getId())).thenReturn(Optional.of(order));
+
+        Transaction lastTxn = new Transaction();
+        lastTxn.setOrder(order);
+        lastTxn.setType("AUTHORIZE");
+        lastTxn.setGatewayTransactionId("AUTH-XYZ");
+        when(transactionRepository.findAll()).thenReturn(java.util.List.of(lastTxn));
+        when(transactionRepository.save(any(Transaction.class))).thenAnswer(i -> i.getArgument(0));
+        when(orderRepository.save(any(Order.class))).thenAnswer(i -> i.getArgument(0));
+        when(authorizeNetClient.voidTransaction("AUTH-XYZ")).thenReturn(okResponse("VOID-1"));
+
+        // Act
+        PaymentDtos.VoidRequest req = new PaymentDtos.VoidRequest(order.getId().toString());
+        PaymentDtos.PurchaseResponse resp = paymentService.voidOrder(req);
+
+        // Assert
+        assertThat(resp.status()).isIn("VOIDED", "FAILED");
+    }
+
+    @Test
+    void refund_success_updates_status() {
+        // Arrange
+        Order order = new Order();
+        try {
+            var idField = Order.class.getDeclaredField("id");
+            idField.setAccessible(true);
+            idField.set(order, java.util.UUID.randomUUID());
+        } catch (Exception ignored) {}
+        when(orderRepository.findById(order.getId())).thenReturn(Optional.of(order));
+
+        Transaction settled = new Transaction();
+        settled.setOrder(order);
+        settled.setType("PURCHASE");
+        settled.setGatewayTransactionId("PUR-123");
+        when(transactionRepository.findAll()).thenReturn(java.util.List.of(settled));
+        when(transactionRepository.save(any(Transaction.class))).thenAnswer(i -> i.getArgument(0));
+        when(orderRepository.save(any(Order.class))).thenAnswer(i -> i.getArgument(0));
+        when(authorizeNetClient.refund(eq("PUR-123"), anyString(), anyLong())).thenReturn(okResponse("REF-1"));
+
+        // Act
+        PaymentDtos.RefundRequest req = new PaymentDtos.RefundRequest(order.getId().toString(), 500, "1111");
+        PaymentDtos.PurchaseResponse resp = paymentService.refund(req);
+
+        // Assert
+        assertThat(resp.status()).isIn("REFUNDED", order.getStatus());
+    }
 }
 

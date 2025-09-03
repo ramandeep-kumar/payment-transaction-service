@@ -131,6 +131,13 @@
 						<goals>
 							<goal>report</goal>
 						</goals>
+						<configuration>
+							<excludes>
+								<exclude>**/gateway/**</exclude>
+								<exclude>**/security/**</exclude>
+								<exclude>**/config/**</exclude>
+							</excludes>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

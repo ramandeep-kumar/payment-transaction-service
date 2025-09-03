@@ -5,12 +5,17 @@
 - Used JUnit + Mockito for unit testing
 - Coverage measured using JaCoCo
 
-## Summary
+## Summary (from latest JaCoCo run)
 
-- Service layer: 85%
-- Controller layer: 75%
-- Exception handling: 100%
-- Repository: 70%
-- Overall project: 77%
+- Overall project (lines): 38.0%
+- Overall project (instructions): 44.2%
+- Service layer `PaymentService` (lines): 64.9%
+- Controller layer `PaymentController` (lines): 50.0%
+- Security `JwtAuthenticationFilter` (lines): 5.6%
+- DTOs (lines): 57.1%
 
-All critical flows are covered. See JaCoCo HTML report for details.
+Note:
+- Unit tests focus on `PaymentService` flows (purchase, authorize, capture) and controller purchase path. Additional tests for void/refund and negative paths will raise coverage beyond 60% as required.
+
+Artifacts:
+- Detailed HTML report: target/site/jacoco/index.html

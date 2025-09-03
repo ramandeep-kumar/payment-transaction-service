@@ -1,0 +1,161 @@
+openapi: 3.0.0
+info:
+  title: Payment Transaction Service API
+  version: "1.0"
+  description: API documentation for Payment Transaction Service
+paths:
+  /api/v1/payments/purchase:
+    post:
+      summary: Purchase (auth + capture)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRequest'
+      responses:
+        '200':
+          description: Purchase response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+  /api/v1/payments/authorize:
+    post:
+      summary: Authorize payment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRequest'
+      responses:
+        '200':
+          description: Authorize response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+  /api/v1/payments/capture/{transactionId}:
+    post:
+      summary: Capture authorized payment
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Capture response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+  /api/v1/payments/cancel/{transactionId}:
+    post:
+      summary: Cancel payment before capture
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cancel response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+  /api/v1/payments/refund/{transactionId}:
+    post:
+      summary: Refund payment
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: amount
+          in: query
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Refund response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+  /api/v1/payments/history/{orderId}:
+    get:
+      summary: Get transaction history for an order
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Transaction history list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+components:
+  schemas:
+    PaymentRequest:
+      type: object
+      properties:
+        amount:
+          type: number
+        currency:
+          type: string
+        paymentMethodNonce:
+          type: string
+    PaymentResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        transactionId:
+          type: string
+        message:
+          type: string
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+        transactionId:
+          type: string
+        amount:
+          type: number
+        type:
+          type: string
+        status:
+          type: string
+        transactionDate:
+          type: string
+          format: date-time
+        order:
+          $ref: '#/components/schemas/Order'
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+        amount:
+          type: number
+        currency:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time

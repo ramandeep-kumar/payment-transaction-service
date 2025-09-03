@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Node artifacts (cleanup)
+node_modules/
+package-lock.json
+package.json
+prisma/

@@ -70,6 +70,12 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- Authorize.Net official Java SDK -->
+		<dependency>
+			<groupId>net.authorize</groupId>
+			<artifactId>anet-java-sdk</artifactId>
+			<version>1.9.8</version>
+		</dependency>
 	</dependencies>
 
 	<build>
